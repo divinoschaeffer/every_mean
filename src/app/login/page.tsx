@@ -1,10 +1,10 @@
+'use client'
 
-export default function Login(){
+import AuthForm from "@/components/AuthForm"
+import { login } from "@/actions/auth"
 
-
+export default function Page(){
     return(
-        <div>
-            <h1>Login</h1>
-        </div>
+        <AuthForm name="Connexion" formAction={login}></AuthForm>
     )
 }

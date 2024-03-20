@@ -1,0 +1,57 @@
+import { Rubik } from "next/font/google";
+import Link from "next/link";
+import { MouseEvent, useState } from "react";
+import { User, formUser } from "@/types";
+import { useRouter } from "next/navigation";
+
+const rubik = Rubik({
+    weight: '700',
+    subsets: ['latin'],
+  })
+
+export default function AuthForm({name, formAction}: {name: string, formAction: (formData: formUser) => Promise<User>}){
+
+    const [email, setEmail] = useState<string>("");
+    const [password, setPassword] = useState<string>("");
+    const router = useRouter();
+
+    async function handleSubmit(e: MouseEvent){
+        e.preventDefault();
+
+        const formData: formUser = {
+            email: email,
+            password: password
+        }
+        try {
+            const user: User = await formAction(formData);
+            sessionStorage.setItem('user', JSON.stringify(user));
+            router.push("/dashboard");
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    return(
+        <div className="flex flex-col h-screen">
+            <header className="flex p-4 place-self-start">
+                <Link href="/">
+                <h1 className={rubik.className + ` text-2xl` }>Every-Mean</h1>
+                </Link>
+            </header>
+            <div className="flex flex-col justify-center h-full">    
+                <form className="flex flex-col self-center space-y-4 w-full md:w-1/4">
+                    <h2 className={rubik.className + " text-center text-3xl mb-4"}>{name}</h2>
+                    <div className="flex flex-col">
+                        <label>E-mail</label>
+                        <input className="pl-2 bg-gray-light text-gray-medium" placeholder="Entrez votre e-mail" type="email" required={true} onChange={e => setEmail(e.target.value)} value={email}></input>
+                    </div>
+                    <div className="flex flex-col">
+                        <label>Mot de passe</label>
+                        <input className="pl-2 bg-gray-light text-gray-medium" placeholder="Entre votre mot de passe" required={true} type="password" onChange={e => setPassword(e.target.value)} value={password}></input>
+                    </div>
+                    <button className="text-white bg-blue" onClick={e => handleSubmit(e)}>Passez à la suite</button>
+                </form>
+            </div>
+        </div>
+    )
+}
