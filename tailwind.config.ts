@@ -19,7 +19,8 @@ const config: Config = {
         medium: "#616161"
       },
       white: "#F5F5F5",
-      black: "#000000"
+      black: "#000000",
+      red: "#D35F5F"
     },
     extend: {
     },
