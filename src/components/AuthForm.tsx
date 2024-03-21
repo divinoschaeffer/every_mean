@@ -13,10 +13,30 @@ export default function AuthForm({name, formAction}: {name: string, formAction: 
 
     const [email, setEmail] = useState<string>("");
     const [password, setPassword] = useState<string>("");
+    const [emailError, setEmailError] = useState<boolean>(false);
+    const [authError, setAuthError] = useState<boolean>(false);
+    const [passwordError, setPasswordError] = useState<boolean>(false);
     const router = useRouter();
+
+    function displayError(func: (bool: boolean) => void): void{
+        func(true);
+            setTimeout(() => {
+                func(false);
+            }, 2000);
+    }
 
     async function handleSubmit(e: MouseEvent){
         e.preventDefault();
+
+        if(email === ""){
+            displayError(setEmailError);
+            return;
+        }
+
+        if(password.length < 6){
+            displayError(setPasswordError);
+            return;
+        }
 
         const formData: formUser = {
             email: email,
@@ -27,7 +47,7 @@ export default function AuthForm({name, formAction}: {name: string, formAction: 
             sessionStorage.setItem('user', JSON.stringify(user));
             router.push("/dashboard");
         } catch (error) {
-            console.log(error);
+            displayError(setAuthError)
         }
     }
 
@@ -50,6 +70,9 @@ export default function AuthForm({name, formAction}: {name: string, formAction: 
                         <input className="pl-2 bg-gray-light text-gray-medium" placeholder="Entre votre mot de passe" required={true} type="password" onChange={e => setPassword(e.target.value)} value={password}></input>
                     </div>
                     <button className="text-white bg-blue" onClick={e => handleSubmit(e)}>Passez à la suite</button>
+                    {(authError) ? <p className="text-center">Mauvais mot de passe ou email</p> : null}
+                    {(passwordError) ? <p className="text-center bg-red text-white">Mot de passe trop court</p> : null}
+                    {(emailError) ? <p className="text-center bg-red text-white">L'email ne pas être vide</p> : null}
                 </form>
             </div>
         </div>
