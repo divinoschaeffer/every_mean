@@ -7,7 +7,7 @@ function isAuthentificate(request: NextRequest): boolean{
 
 export function middleware(request: NextRequest){
     if(request.nextUrl.pathname.startsWith('/dashboard')){
-        if(isAuthentificate(request)){
+        if(!isAuthentificate(request)){
             return NextResponse.redirect(new URL('/login', request.url));
         }
     }
